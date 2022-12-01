@@ -1,5 +1,3 @@
-import imp
-import socket
 import Leap, sys, time, ctypes, numpy
 from PIL import Image, ImageDraw, ImageFont
 import tensorflow as tf
@@ -9,7 +7,6 @@ import socket
 import uuid
 from datetime import datetime
 from _packages.HTTP.BasicHttpAgent import *
-from http.client import HTTPSConnection, HTTPConnection
 import requests
 
 class SampleListener(Leap.Listener):
@@ -49,7 +46,8 @@ class SampleListener(Leap.Listener):
                 image = self.get_image(controller)
                 simbol = self.test_image(image)
                 print(simbol)
-                if simbol == 'Open hand' or simbol == 'L symbol' or simbol == 'Fist' or simbol == 'Vertical Hand':
+                #Based on application code below can be changed to send appropriate msg to FIWARE
+                if simbol == 'Open hand' or simbol == 'L symbol' or simbol == 'Fist' or simbol == 'Vertical Hand': 
 
                     with open('msg_json_next_step.json') as f_ns_json:
                         ns_data = json.loads(f_ns_json.read())
@@ -57,7 +55,8 @@ class SampleListener(Leap.Listener):
                     now = datetime.now()
                     ns_data["status"]["observedAt"] = now.strftime("%Y-%m-%dT%H:%M:%SZ")
                     ns_data["status"]["value"] = "started"
-                    requests.post("http://147.91.72.130:1026/ngsi-ld/v1/entities/",json=ns_data,headers={"Content-Type":"application/ld+json"})
+                    #Put here IP of your FIWARE ORION Context Broker
+                    requests.post("http://127.0.0.1:1026/ngsi-ld/v1/entities/",json=ns_data,headers={"Content-Type":"application/ld+json"})
                 #Show IMG
                 #img = Image.fromarray(image).convert("RGB")
                 #title_text = simbol
